@@ -37,6 +37,11 @@ if (!("lightdm" in window)) {
       name: "session 2",
       comment: "no comment",
     },
+    {
+      key: "key3",
+      name: "bspwm",
+      comment: "no comment",
+    },
   ]
 
   lightdm.default_session = lightdm.sessions[0]

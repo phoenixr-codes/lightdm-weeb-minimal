@@ -10,7 +10,7 @@
       <div id="login-response"></div>
       <form id="login-form" action="javascript: provideSecret();">
         <div class="usernames">
-          <div class="arrow" id="last">
+          <div class="arrow" id="last-user">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -26,7 +26,36 @@
             </svg>
           </div>
           <select id="name" tabindex="1"></select>
-          <div class="arrow" id="next">
+          <div class="arrow" id="next-user">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </div>
+        </div>
+        <div class="sessions">
+          <div class="arrow" id="last-session">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 19.5L8.25 12l7.5-7.5"
+              />
+            </svg>
+          </div>
+          <select id="session" tabindex="2"></select>
+          <div class="arrow" id="next-session">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -47,9 +76,9 @@
               aria-readonly="true"
               tabindex="-1"
             />
-            <input placeholder="Password" type="password" id="login-password" tabindex="2" />
+            <input placeholder="Password" type="password" id="login-password" tabindex="3" />
           </div>
-          <button class="visibility-button" type="button" tabindex="3">
+          <button class="visibility-button" type="button" tabindex="4">
             <svg
               id="show-password"
               xmlns="http://www.w3.org/2000/svg"
@@ -90,7 +119,7 @@
             </svg>
           </button>
         </div>
-        <button id="login-button" type="submit" tabindex="3" class="button">
+        <button id="login-button" type="submit" tabindex="5" class="button">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -132,7 +161,7 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="currentColor"
-        tabindex="4"
+        tabindex="6"
       >
         <path
           stroke-linecap="round"
@@ -148,7 +177,7 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="currentColor"
-        tabindex="5"
+        tabindex="7"
       >
         <path
           stroke-linecap="round"
@@ -164,7 +193,7 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="currentColor"
-        tabindex="6"
+        tabindex="8"
       >
         <path
           stroke-linecap="round"

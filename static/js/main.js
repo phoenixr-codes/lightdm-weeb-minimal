@@ -1,13 +1,20 @@
 let currentUserIndex = 0
 let selectedUser = null
+let currentSessionIndex = 0
+let selectedSession = null
 let password = null
 const userField = document.getElementById("name")
+const sessionField = document.getElementById("session")
 const passwordField = document.getElementById("login-password")
 const loginPicture = document.getElementById("login-picture")
-const nextButton = document.getElementById("next")
-const lastButton = document.getElementById("last")
+const nextUserButton = document.getElementById("next-user")
+const lastUserButton = document.getElementById("last-user")
+const nextSessionButton = document.getElementById("next-session")
+const lastSessionButton = document.getElementById("last-session")
 const usernameToIndex =
   lightdm.users?.reduce((acc, { name }, index) => ({ ...acc, [name]: index }), {}) || {}
+const sessionToIndex =
+  lightdm.sessions?.reduce((acc, { name }, index) => ({ ...acc, [name]: index }), {}) || {}
 
 const show_error = error => console.error(error)
 
@@ -22,9 +29,26 @@ const setupUserList = () => {
     userOption.innerText = user.display_name
     userField.appendChild(userOption)
   })
-  if (userField.childElementCount > 1) return
-  nextButton.style.visibility = "hidden"
-  lastButton.style.visibility = "hidden"
+  if (userField.childElementCount <= 1) {
+    nextUserButton.style.visibility = "hidden"
+    lastUserButton.style.visibility = "hidden"
+  }
+  
+  lightdm.sessions?.forEach(session => {
+    const sessionOption = document.createElement("option")
+    sessionOption.setAttribute("value", session.name)
+    sessionOption.innerText = session.name
+    sessionField.appendChild(sessionOption)
+  })
+  if (sessionField.childElementCount <= 1) {
+    nextSessionButton.style.visibility = "hidden"
+    lastSessionButton.style.visibility = "hidden"
+  }
+}
+
+const selectSessionByUser = ({ userIndex }) => {
+  const previousSession = lightdm.users[userIndex]?.session
+  return sessionToIndex[previousSession]
 }
 
 // Selection by GUI
@@ -34,6 +58,12 @@ const selectUserFromList = ({ userIndex = 0, err, fromKeyboard }) => {
   startAuthentication(lightdm.users[userIndex]?.username)
   if (fromKeyboard) return
   userField.value = lightdm.users[userIndex]?.username
+  passwordField.focus()
+}
+
+const selectSessionFromList = ({ sessionIndex, fromKeyboard }) => {
+  if (fromKeyboard) return;
+  sessionField.value = lightdm.sessions[currentSessionIndex]?.name
   passwordField.focus()
 }
 
@@ -52,9 +82,7 @@ const startAuthentication = username => {
 
 const authenticationComplete = () => {
   if (lightdm.is_authenticated)
-    lightdm.start_session(
-      lightdm.users[currentUserIndex]?.session || lightdm.default_session?.name || "gnome"
-    )
+    lightdm.start_session(sessionField.value)
   else {
     selectUserFromList({ userIndex: currentUserIndex, err: true })
     showMessage("Wrong password!")
@@ -73,16 +101,31 @@ lightdm.authentication_complete.connect(authenticationComplete)
 setupUserList()
 selectUserFromList({ userIndex: 0 })
 showMessage("&nbsp")
-lastButton.addEventListener("click", () => {
+lastUserButton.addEventListener("click", () => {
   currentUserIndex--
   if (currentUserIndex < 0) currentUserIndex = userField.childElementCount - 1
   if (userField.childElementCount != 1) selectUserFromList({ userIndex: currentUserIndex })
+  currentSessionIndex = selectSessionByUser({ userIndex: currentUserIndex }) || currentSessionIndex
+  selectSessionFromList({ sessionIndex: currentSessionIndex })
   showMessage("&nbsp")
 })
-
-nextButton.addEventListener("click", () => {
+nextUserButton.addEventListener("click", () => {
   currentUserIndex++
   if (currentUserIndex >= userField.childElementCount) currentUserIndex = 0
   if (userField.childElementCount != 1) selectUserFromList({ userIndex: currentUserIndex })
+  currentSessionIndex = selectSessionByUser({ userIndex: currentUserIndex }) || currentSessionIndex
+  selectSessionFromList({ sessionIndex: currentSessionIndex })
+  showMessage("&nbsp")
+})
+lastSessionButton.addEventListener("click", () => {
+  currentSessionIndex--
+  if (currentSessionIndex < 0) currentSessionIndex = sessionField.childElementCount - 1
+  if (sessionField.childElementCount != 1) selectSessionFromList({ sessionIndex: currentSessionIndex })
+  showMessage("&nbsp")
+})
+nextSessionButton.addEventListener("click", () => {
+  currentSessionIndex++
+  if (currentSessionIndex >= sessionField.childElementCount) currentSessionIndex = 0
+  if (sessionField.childElementCount != 1) selectSessionFromList({ sessionIndex: currentSessionIndex })
   showMessage("&nbsp")
 })
